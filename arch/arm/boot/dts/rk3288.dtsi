@@ -65,11 +65,167 @@
 			reg = <0xff710000 0x8000>;
 		};
 
+		pmu: pmu@ff730000 {
+			compatible = "rockchip,rk3066-pmu", "syscon";
+			reg = <0xff730000 0x100>;
+		};
+
+		sgrf: syscon@ff740000 {
+			compatible = "syscon";
+			reg = <0xff740000 0x1000>;
+		};
+
+		grf: syscon@ff770000 {
+			compatible = "syscon";
+			reg = <0xff770000 0x1000>;
+		};
+
 		timer {
 			compatible = "arm,armv7-timer";
 			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
 				     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
 			clock-frequency = <24000000>;
+		};
+
+		pinctrl@ff770000 {
+			compatible = "rockchip,rk3288-pinctrl";
+			rockchip,grf = <&grf>;
+			rockchip,pmu = <&pmu>;
+
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges;
+
+			gpio0: gpio0@ff750000 {
+				compatible = "rockchip,gpio-bank";
+				reg =	<0xff750000 0x100>;
+				interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates17 4>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			gpio1: gpio1@ff780000 {
+				compatible = "rockchip,gpio-bank";
+				reg = <0xff780000 0x100>;
+				interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates14 1>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			gpio2: gpio2@ff790000 {
+				compatible = "rockchip,gpio-bank";
+				reg = <0xff790000 0x100>;
+				interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates14 2>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			gpio3: gpio3@ff7a0000 {
+				compatible = "rockchip,gpio-bank";
+				reg = <0xff7a0000 0x100>;
+				interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates14 3>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			gpio4: gpio4@ff7b0000 {
+				compatible = "rockchip,gpio-bank";
+				reg = <0xff7b0000 0x100>;
+				interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates14 4>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			gpio5: gpio5@ff7c0000 {
+				compatible = "rockchip,gpio-bank";
+				reg = <0xff7c0000 0x100>;
+				interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates14 5>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			gpio6: gpio6@ff7d0000 {
+				compatible = "rockchip,gpio-bank";
+				reg = <0xff7d0000 0x100>;
+				interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates14 6>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			gpio7: gpio7@ff7e0000 {
+				compatible = "rockchip,gpio-bank";
+				reg = <0xff7e0000 0x100>;
+				interrupts = <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates14 7>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			gpio8: gpio8@ff7f0000 {
+				compatible = "rockchip,gpio-bank";
+				reg = <0xff7f0000 0x100>;
+				interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
+//				clocks = <&clk_gates14 8>;
+
+				gpio-controller;
+				#gpio-cells = <2>;
+
+				interrupt-controller;
+				#interrupt-cells = <2>;
+			};
+
+			/* FIXME what is gpio15 */
+
+			pcfg_pull_up: pcfg_pull_up {
+				bias-pull-up;
+			};
+
+			pcfg_pull_down: pcfg_pull_down {
+				bias-pull-down;
+			};
+
+			pcfg_pull_none: pcfg_pull_none {
+				bias-disable;
+			};
 		};
 
 		watchdog@ff800000 {
