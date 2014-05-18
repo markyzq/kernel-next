@@ -115,16 +115,18 @@ struct rockchip_pll_rate_table rk3288_gpll_rates[] = {
 	{ /* sentinel */ },
 };
 
+PNAME(mux_pll_p)	= { "xin24m", "xin32k" };
+
 static struct rockchip_pll_clock rk3288_pll_clks[] __initdata = {
-	[apll] = PLL(pll_rk3066, 0, "apll", "xin24m", 0, RK3288_PLL_CON(0),
+	[apll] = PLL(pll_rk3066, 0, "apll", mux_pll_p, 0, RK3288_PLL_CON(0),
 		     RK3288_MODE_CON, 0, 6, rk3288_apll_rates),
-	[dpll] = PLL(pll_rk3066, 0, "dpll", "xin24m", 0, RK3288_PLL_CON(4),
+	[dpll] = PLL(pll_rk3066, 0, "dpll", mux_pll_p, 0, RK3288_PLL_CON(4),
 		     RK3288_MODE_CON, 4, 5, NULL),
-	[cpll] = PLL(pll_rk3066, 0, "cpll", "xin24m", 0, RK3288_PLL_CON(8),
+	[cpll] = PLL(pll_rk3066, 0, "cpll", mux_pll_p, 0, RK3288_PLL_CON(8),
 		     RK3288_MODE_CON, 8, 7, rk3288_cpll_rates),
-	[gpll] = PLL(pll_rk3066, 0, "gpll", "xin24m", 0, RK3288_PLL_CON(12),
+	[gpll] = PLL(pll_rk3066, 0, "gpll", mux_pll_p, 0, RK3288_PLL_CON(12),
 		     RK3288_MODE_CON, 12, 8, rk3288_gpll_rates),
-	[npll] = PLL(pll_rk3066, 0, "npll", "xin24m", 0, RK3288_PLL_CON(16),
+	[npll] = PLL(pll_rk3066, 0, "npll",  mux_pll_p, 0, RK3288_PLL_CON(16),
 		     RK3288_MODE_CON, 14, 9, NULL),
 };
 
