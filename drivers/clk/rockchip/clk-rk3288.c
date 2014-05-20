@@ -211,7 +211,7 @@ static struct rockchip_mux_clock rk3288_mux_clks[] __initdata = {
 	MUX(0, "mux_mac", mux_mac_p, RK3288_CLKSEL_CON(21), 4, 1, 0, MFLAGS),
 
 	MUX(0, "mux_hsadc_pll", mux_pll_src_cpll_gpll_p, RK3288_CLKSEL_CON(22), 0, 1, 0, MFLAGS),
-	MUX(0, "mux_hsadc_out", mux_hsadc_out_p, RK3288_CLKSEL_CON(22), 4, 1, 0, MFLAGS),
+//	MUX(0, "mux_hsadc_out", mux_hsadc_out_p, RK3288_CLKSEL_CON(22), 4, 1, 0, MFLAGS),
 	//FIXME: mux_hsadc (from hsadc_out and hsadc_inv, in <CLKSEL_CON(22), 7, 1>
 
 	MUX(0, "mux_spi0_pll", mux_pll_src_cpll_gpll_p, RK3288_CLKSEL_CON(25), 7, 1, 0, MFLAGS),
@@ -299,7 +299,7 @@ static struct clk_div_table div_hclk_bus_t[] = {
 				};
 */
 
-
+/*
 				clk_sel_con11: sel-con@008c {
 					compatible = "rockchip,rk3188-selcon";
 					reg = <0x008c 0x4>;
@@ -380,7 +380,7 @@ static struct clk_div_table div_hclk_bus_t[] = {
 						#clock-cells = <0>;
 					};
 				};
-
+*/
 
 #define DFLAGS CLK_DIVIDER_HIWORD_MASK
 static struct rockchip_div_clock rk3288_div_clks[] __initdata = {
@@ -531,7 +531,7 @@ static struct rockchip_gate_clock rk3288_gate_clks[] __initdata = {
 	GATE(0, "gate_sclk_edp", "mux_sclk_edp", RK3288_CLKGATE_CON(3), 9, 0, GFLAGS),
 
 
-
+/*
 				clk_gates3: gate-clk@016c {
 					compatible = "rockchip,rk3188-gate-clk";
 					reg = <0x016c 0x4>;
@@ -555,7 +555,7 @@ static struct rockchip_gate_clock rk3288_gate_clks[] __initdata = {
 						"clk_rga",		"aclk_rga",
 						"hsicphy_480m",		"clk_cif_pll",
 
-						/*Not use hclk_vpu_gate tmp, fixme*/
+						//Not use hclk_vpu_gate tmp, fixme
 						"reserved",		"clk_vepu",
 						"reserved",		"clk_vdpu",
 
@@ -592,14 +592,14 @@ static struct rockchip_gate_clock rk3288_gate_clks[] __initdata = {
 						"spdif_8ch_frac",		"clk_spdif_8ch",
 						"clk_tsp",		"clk_tspout",
 
-						/* Not use these ddr gates */
-						"reserved",		"reserved",	   /*"g_clk_ddrphy0",		"g_clk_ddrphy1",*/
-						"clk_jtag",		"reserved";		/*"testclk_gate_en";*/
+						// Not use these ddr gates
+						"reserved",		"reserved",	   //"g_clk_ddrphy0",		"g_clk_ddrphy1",
+						"clk_jtag",		"reserved";		//"testclk_gate_en";
 
                                             rockchip,suspend-clkgating-setting=<0xf000 0xf000>;
 					#clock-cells = <1>;
 				};
-
+*/
 	GATE(0, "gate_mac_rx", "mux_mac", RK3288_CLKGATE_CON(5), 0, 0, GFLAGS),
 	GATE(0, "gate_mac_tx", "mux_mac", RK3288_CLKGATE_CON(5), 1, 0, GFLAGS),
 	GATE(0, "gate_mac_ref", "mux_mac", RK3288_CLKGATE_CON(5), 2, 0, GFLAGS),
