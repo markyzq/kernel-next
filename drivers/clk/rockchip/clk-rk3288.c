@@ -879,20 +879,16 @@ static void __init rk3288_clock_apply_init_table(void)
 {
 }
 
+#define RK3288_GRF_SOC_STATUS	0x280
+
 static void __init rk3288_clk_init(struct device_node *np)
 {
-	void __iomem *reg_base, *reg_grf_soc_status;
+	void __iomem *reg_base;
 	struct clk *clk;
 
 	reg_base = of_iomap(np, 0);
 	if (!reg_base) {
 		pr_err("%s: could not map cru region\n", __func__);
-		return;
-	}
-
-	reg_grf_soc_status = of_iomap(np, 1);
-	if (!reg_grf_soc_status) {
-		pr_err("%s: could not map soc_status register\n", __func__);
 		return;
 	}
 
@@ -912,7 +908,7 @@ static void __init rk3288_clk_init(struct device_node *np)
 
 	rockchip_clk_register_plls(rk3288_pll_clks,
 				   ARRAY_SIZE(rk3288_pll_clks),
-				   reg_grf_soc_status);
+				   RK3288_GRF_SOC_STATUS);
 	rockchip_clk_register_branches(rk3288_clk_branches,
 				  ARRAY_SIZE(rk3288_clk_branches));
 
