@@ -734,11 +734,6 @@ __armv7_mmu_cache_on:
 		bic     r6, r6, #1 << 31        @ 32-bit translation system
 		bic     r6, r6, #3 << 0         @ use only ttbr0
 		mcrne	p15, 0, r3, c2, c0, 0	@ load page table pointer
-/* The following is a test, and should not really be here, see
- * http://comments.gmane.org/gmane.linux.ports.arm.kernel/204915
- * If this is really the source for the fault, the bootloader _needs_
- * to be changed.
- */
 		mcrne	p15, 0, r0, c8, c7, 0	@ flush I,D TLBs
 		mcr	p15, 0, r0, c7, c5, 4	@ ISB
 		mcrne	p15, 0, r1, c3, c0, 0	@ load domain access control
