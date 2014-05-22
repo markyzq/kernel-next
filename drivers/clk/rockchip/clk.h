@@ -47,6 +47,7 @@
 #define RK3288_GLB_SRST_FST		0x1b0
 #define RK3288_GLB_SRST_SND		0x1b4
 #define RK3288_SOFTRST_CON(x)		(x * 0x4 + 0x1b8)
+#define RK3288_MISC_CON			0x1e8
 
 enum rockchip_pll_type {
 	pll_rk3066,
