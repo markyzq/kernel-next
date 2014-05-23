@@ -312,6 +312,20 @@
 			};
 		};
 
+		gmac: eth@ff290000 {
+			compatible = "rockchip,rk3288-gmac";
+			reg = <0xff290000 0x10000>;
+			interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "macirq";
+			//phy-mode = "rmii";
+			phy-mode = "rgmii";
+			clocks = <&cru PCLK_GMAC>, <&gmac_tx>;
+			clock-names = "stmmaceth", "rockchip_gmac_aclk", "rockchip_gmac_tx", "rockchip_gmac_rx";
+//			clocks = <>;
+//			pinctrl-names = "default";
+//			pinctrl-0 = <&mac_clk &mac_txpins &mac_rxpins &mac_mdpins>;
+		};
+
 		watchdog@ff800000 {
 			compatible = "snps,dw-wdt";
 			reg = <0xff800000 0x100>;
