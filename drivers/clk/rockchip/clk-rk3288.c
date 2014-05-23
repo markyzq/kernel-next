@@ -127,7 +127,7 @@ PNAME(mux_pll_src_cpll_gpll_npll_p)	= { "cpll", "gpll", "npll" };
 PNAME(mux_pll_src_cpll_gpll_usb480m_p)	= { "cpll", "gpll", "usb480m" };
 
 PNAME(mux_mmc_src_p)	= { "cpll", "gpll", "xin24m", "xin24m" };
-PNAME(mux_i2s_pre_p)	= { "i2s_src", "i2s_frac", "i2s_clkin", "xin12m" };
+PNAME(mux_i2s_pre_p)	= { "i2s_src", "i2s_frac", "ext_i2s", "xin12m" };
 PNAME(mux_i2s_clkout_p)	= { "i2s_pre", "xin12m" };
 PNAME(mux_spdif_p)	= { "spdif_pre", "spdif_frac", "xin12m" };
 PNAME(mux_spdif_8ch_p)	= { "spdif_8ch_pre", "spdif_8ch_frac", "xin12m" };
@@ -138,9 +138,9 @@ PNAME(mux_uart2_p)	= { "uart2_src", "uart2_frac", "xin24m" };
 PNAME(mux_uart3_p)	= { "uart3_src", "uart3_frac", "xin24m" };
 PNAME(mux_uart4_p)	= { "uart4_src", "uart4_frac", "xin24m" };
 PNAME(mux_cif_out_p)	= { "cif_src", "xin24m" };
-PNAME(mux_macref_p)	= { "mac_src", "gmac_clkin" };
-PNAME(mux_hsadcout_p)	= { "hsadc_src", "hsadc_ext" };
-PNAME(mux_edp_24m_p)	= { "edp_24m_clkin", "xin24m" };
+PNAME(mux_macref_p)	= { "mac_src", "ext_gmac" };
+PNAME(mux_hsadcout_p)	= { "hsadc_src", "ext_hsadc" };
+PNAME(mux_edp_24m_p)	= { "ext_edp_24m", "xin24m" };
 PNAME(mux_tspout_p)	= { "cpll", "gpll", "npll", "xin27m" };
 PNAME(mux_usbphy480m_p)	= { "sclk_otgphy0", "sclk_otgphy1", "sclk_otgphy2" };
 PNAME(mux_hsicphy480m_p)= { "cpll", "gpll", "usbphy480m_src" };
@@ -524,7 +524,7 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 			RK3288_CLKSEL_CON(22), 4, 1, MFLAGS),
 	//FIXME: add inverter  as sclk_hsadc (from hsadc_out and hsadc_inv, in <CLKSEL_CON(22), 7, 1>
 
-	GATE(0, "jtag", "jtag_tck", 0,
+	GATE(0, "jtag", "ext_jtag", 0,
 			RK3288_CLKGATE_CON(4), 14, GFLAGS),
 
 	COMPOSITE_NODIV(0, "usbphy480m_src", mux_usbphy480m_p, 0,
@@ -577,7 +577,6 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 	GATE(0, "pclk_rkpwm", "pclk_bus", 0, RK3288_CLKGATE_CON(11), 11, GFLAGS),
 
 	/* ddrctrl [DDR Controller PHY clock] gates */
-	/* FIXME: do these 2 come from the ddr clock or from somewhere else? */
 	GATE(0, "nclk_ddrupctl0", "ddrphy", 0, RK3288_CLKGATE_CON(11), 4, GFLAGS),
 	GATE(0, "nclk_ddrupctl1", "ddrphy", 0, RK3288_CLKGATE_CON(11), 5, GFLAGS),
 
@@ -595,7 +594,6 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 
 	/* hclk_peri gates */
 	GATE(0, "hclk_peri_matrix", "hclk_peri", 0, RK3288_CLKGATE_CON(6), 0, GFLAGS),
-	/* FIXME: do these 3 come from hclk_usb_peri? */
 	GATE(HCLK_OTG0, "hclk_otg0", "hclk_peri", 0, RK3288_CLKGATE_CON(7), 4, GFLAGS),
 	GATE(HCLK_HOST0, "hclk_host0", "hclk_peri", 0, RK3288_CLKGATE_CON(7), 6, GFLAGS),
 	GATE(HCLK_HOST1, "hclk_host1", "hclk_peri", 0, RK3288_CLKGATE_CON(7), 7, GFLAGS),
@@ -612,7 +610,6 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 	GATE(HCLK_SDIO1, "hclk_sdio1", "hclk_peri", 0, RK3288_CLKGATE_CON(8), 5, GFLAGS),
 	GATE(HCLK_EMMC, "hclk_emmc", "hclk_peri", 0, RK3288_CLKGATE_CON(8), 6, GFLAGS),
 	GATE(HCLK_HSADC, "hclk_hsadc", "hclk_peri", 0, RK3288_CLKGATE_CON(8), 7, GFLAGS),
-	//FIXME what is pmu_hclk_otg0
 	GATE(0, "pmu_hclk_otg0", "hclk_peri", 0, RK3288_CLKGATE_CON(7), 5, GFLAGS),
 
 	/* pclk_peri gates */
@@ -727,15 +724,14 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 	GATE(0, "sclk_tsp_27m", "xin27m", 0,
 			RK3288_CLKGATE_CON(8), 11, GFLAGS),
 
-	//FIXME what is this and where does it come from?
+	//FIXME supposed to be only for tests, so remove
 	COMPOSITE_FRAC(0, "wifi_frac", "wifi_src", 0, RK3288_CLKSEL_CON(23), 0,
 			RK3288_CLKGATE_CON(13), 12, GFLAGS),
 
-
-	GATE(0, "pclk_cif_in", "xin_cif", 0, RK3288_CLKGATE_CON(16), 0, GFLAGS),
+	GATE(0, "pclk_cif_in", "ext_cif", 0, RK3288_CLKGATE_CON(16), 0, GFLAGS),
 	/* FIXME + inverter in clksel29_con <4 1>; */
 
-	GATE(0, "pclk_isp_in", "xin_isp", 0, RK3288_CLKGATE_CON(16), 3, GFLAGS),
+	GATE(0, "pclk_isp_in", "ext_isp", 0, RK3288_CLKGATE_CON(16), 3, GFLAGS),
 	/* FIXME + inverter in clksel29_con <3 1>; */
 };
 
