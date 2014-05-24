@@ -353,10 +353,10 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 			RK3288_CLKSEL_CON(6), 14, 2, MFLAGS, 8, 6, DFLAGS,
 			RK3288_CLKGATE_CON(3), 15, GFLAGS),
 
-	GATE(0, "sclk_hdmi_hdcp", "xin24m",
-			RK3288_CLKGATE_CON(5), 12, 0, GFLAGS),
-	GATE(0, "sclk_hdmi_cec", "xin32k",
-			RK3288_CLKGATE_CON(5), 11, 0, GFLAGS),
+	GATE(0, "sclk_hdmi_hdcp", "xin24m", 0,
+			RK3288_CLKGATE_CON(5), 12, GFLAGS),
+	GATE(0, "sclk_hdmi_cec", "xin32k", 0,
+			RK3288_CLKGATE_CON(5), 11, GFLAGS),
 
 	COMPOSITE(0, "aclk_hevc", mux_pll_src_cpll_gpll_npll_p, 0,
 			RK3288_CLKSEL_CON(39), 14, 2, MFLAGS, 8, 5, DFLAGS,
