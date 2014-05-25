@@ -24,8 +24,8 @@
 
 struct rockchip_priv_data {
 	struct regmap *grf;
+	int interface;
 
-//	int interface;
 //	int clk_enabled;
 //	struct clk *tx_clk;
 //	struct regulator *regulator;
@@ -81,7 +81,7 @@ static int rk3288_gmac_init(struct platform_device *pdev, void *priv)
 //		clk_prepare_enable(gmac->tx_clk);
 //		gmac->clk_enabled = 1;
 	} else {
-//		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
+//		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_RMII_RATE);
 //		clk_prepare(gmac->tx_clk);
 	}
 
