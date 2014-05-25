@@ -10,8 +10,10 @@
  * GNU General Public License for more details.
  */
 
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/pinctrl/rockchip.h>
 #include <dt-bindings/clock/rk3288-cru.h>
 #include "skeleton.dtsi"
 
@@ -310,6 +312,15 @@
 			pcfg_pull_none: pcfg_pull_none {
 				bias-disable;
 			};
+
+			uart2 {
+				uart2_xfer: uart2-xfer {
+					rockchip,pins = <RK_GPIO7 22 RK_FUNC_1 &pcfg_pull_up>,
+							<RK_GPIO7 23 RK_FUNC_1 &pcfg_pull_none>;
+				};
+				/* no rts / cts for uart2 */
+			};
+
 		};
 
 		gmac: eth@ff290000 {
@@ -319,7 +330,7 @@
 			interrupt-names = "macirq";
 			//phy-mode = "rmii";
 			phy-mode = "rgmii";
-			clocks = <&cru PCLK_GMAC>, <&gmac_tx>;
+//			clocks = <&cru PCLK_GMAC>, <&gmac_tx>;
 			clock-names = "stmmaceth", "rockchip_gmac_aclk", "rockchip_gmac_tx", "rockchip_gmac_rx";
 //			clocks = <>;
 //			pinctrl-names = "default";
@@ -341,7 +352,8 @@
 			interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
 			reg-shift = <2>;
 			reg-io-width = <4>;
-			clocks = <&cru SCLK_UART0>;
+			clocks = <&cru SCLK_UART0>, <&cru PCLK_UART0>;
+			clock-names = "baudclk", "apb_pclk";
 			status = "disabled";
 		};
 
@@ -352,19 +364,23 @@
 			interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
 			reg-shift = <2>;
 			reg-io-width = <4>;
-			clocks = <&cru SCLK_UART1>;
+			clocks = <&cru SCLK_UART1>, <&cru PCLK_UART1>;
+			clock-names = "baudclk", "apb_pclk";
 			status = "disabled";
 		};
 
 		/* uart_dbg */
-		uart2: serial@ff690000 {
+		uart_dbg: serial@ff690000 {
 			compatible = "snps,dw-apb-uart";
 			reg = <0xff690000 0x100>;
 			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
 			reg-shift = <2>;
 			reg-io-width = <4>;
-			clocks = <&cru SCLK_UART2>;
+			clocks = <&cru SCLK_UART2>, <&cru PCLK_UART2>;
+			clock-names = "baudclk", "apb_pclk";
 			status = "disabled";
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart2_xfer>;
 		};
 
 		/* uart_gps */
@@ -374,7 +390,8 @@
 			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
 			reg-shift = <2>;
 			reg-io-width = <4>;
-			clocks = <&cru SCLK_UART3>;
+			clocks = <&cru SCLK_UART3>, <&cru PCLK_UART3>;
+			clock-names = "baudclk", "apb_pclk";
 			status = "disabled";
 		};
 
@@ -385,7 +402,8 @@
 			interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
 			reg-shift = <2>;
 			reg-io-width = <4>;
-			clocks = <&cru SCLK_UART4>;
+			clocks = <&cru SCLK_UART4>, <&cru PCLK_UART4>;
+			clock-names = "baudclk", "apb_pclk";
 			status = "disabled";
 		};
 	};

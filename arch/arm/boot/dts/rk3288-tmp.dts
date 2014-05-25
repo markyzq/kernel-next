@@ -16,11 +16,35 @@
 / {
 	compatible = "rockchip,rk3288-tmp";
 
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+		serial2 = &uart2;
+		serial3 = &uart3;
+		serial4 = &uart4;
+	};
+
 	memory {
 		reg = <0x0 0x80000000>;
 	};
 
 	soc {
+		gpio-keys {
+			compatible = "gpio-keys";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			autorepeat;
+
+			button@0 {
+				gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
+				linux,code = <116>;
+				label = "GPIO Key Power";
+				linux,input-type = <1>;
+				gpio-key,wakeup = <1>;
+				debounce-interval = <100>;
+			};
+		};
+
 		watchdog@ff800000 {
 			status = "okay";
 		};
