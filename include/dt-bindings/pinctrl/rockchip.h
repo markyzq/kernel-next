@@ -24,6 +24,8 @@
 #define RK_GPIO3	3
 #define RK_GPIO4	4
 #define RK_GPIO6	6
+#define RK_GPIO7	7
+#define RK_GPIO8	8
 
 #define RK_FUNC_GPIO	0
 #define RK_FUNC_1	1
