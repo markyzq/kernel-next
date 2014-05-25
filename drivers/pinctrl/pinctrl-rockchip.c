@@ -439,7 +439,7 @@ static int rockchip_set_mux(struct rockchip_pin_bank *bank, int pin, int mux)
 	int reg, ret, mask;
 	unsigned long flags;
 	u8 bit;
-	u32 data;
+	u32 data, tmpval;
 
 	if (bank->iomux[iomux_num].type & IOMUX_GPIO_ONLY) {
 		if (mux != RK_FUNC_GPIO) {
@@ -472,6 +472,8 @@ static int rockchip_set_mux(struct rockchip_pin_bank *bank, int pin, int mux)
 
 	data = (mask << (bit + 16));
 	data |= (mux & mask) << bit;
+regmap_read(regmap, reg, &tmpval);
+printk("%s: setting 0x%x from 0x%x to 0x%x\n", __func__, reg, tmpval, data);
 	ret = regmap_write(regmap, reg, data);
 
 	spin_unlock_irqrestore(&bank->slock, flags);
@@ -625,7 +627,7 @@ static int rockchip_set_pull(struct rockchip_pin_bank *bank,
 	int reg, ret;
 	unsigned long flags;
 	u8 bit;
-	u32 data;
+	u32 data, tmpval;
 
 	dev_dbg(info->dev, "setting pull of GPIO%d-%d to %d\n",
 		 bank->bank_num, pin_num, pull);
@@ -672,6 +674,8 @@ static int rockchip_set_pull(struct rockchip_pin_bank *bank,
 			return -EINVAL;
 		}
 
+regmap_read(regmap, reg, &tmpval);
+printk("%s: setting 0x%x from 0x%x to 0x%x\n", __func__, reg, tmpval, data);
 		ret = regmap_write(regmap, reg, data);
 
 		spin_unlock_irqrestore(&bank->slock, flags);
