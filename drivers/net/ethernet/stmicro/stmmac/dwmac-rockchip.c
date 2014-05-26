@@ -21,6 +21,7 @@
 #include <linux/phy.h>
 #include <linux/of_net.h>
 #include <linux/regulator/consumer.h>
+#include <linux/mfd/syscon.h>
 
 struct rockchip_priv_data {
 	struct regmap *grf;
@@ -41,6 +42,12 @@ static void *rk3288_gmac_setup(struct platform_device *pdev)
 		return ERR_PTR(-ENOMEM);
 
 	gmac->interface = of_get_phy_mode(dev->of_node);
+
+	gmac->grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,grf");
+	if (IS_ERR(gmac->grf)) {
+		dev_err(dev, "could not get grf syscon\n");
+		return gmac->grf;
+	}
 
 /*	gmac->tx_clk = devm_clk_get(dev, "allwinner_gmac_tx");
 	if (IS_ERR(gmac->tx_clk)) {
