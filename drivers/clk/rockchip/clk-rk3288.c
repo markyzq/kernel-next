@@ -19,7 +19,7 @@
 #include <dt-bindings/clock/rk3288-cru.h>
 #include "clk.h"
 
-#define RK3288_GRF_SOC_CON0	0x244
+#define RK3288_GRF_SOC_CON(x)	(0x244 + x * 4)
 #define RK3288_GRF_SOC_STATUS	0x280
 
 enum rk3288_plls {
@@ -150,6 +150,8 @@ PNAME(mux_testclk_p) 	= { "aclk_peri", "armclk", "aclk_vio0", "ddrphy",
 			    "aclk_vcodec", "aclk_gpu", "aclk_rga", "xin24m",
 			    "xin27m", "xin32k", "sclk_wifi", "dclk_lcdc0",
 			    "dclk_lcdc1", "sclk_isp_jpe", "sclk_isp" };
+
+PNAME(aclk_lcdc_iep_p)	= { "aclk_vio0", "aclk_vio1" };
 
 static struct rockchip_pll_clock rk3288_pll_clks[] __initdata = {
 	[apll] = PLL(pll_rk3066, 0, "apll", mux_pll_p, 0, RK3288_PLL_CON(0),
@@ -312,7 +314,7 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 			RK3288_CLKSEL_CON(32), 14, 2, MFLAGS, 8, 5, DFLAGS,
 			RK3288_CLKGATE_CON(3), 11, GFLAGS),
 	MUXGRF(0, "aclk_vpu", mux_aclk_vpu_p, 0,
-			RK3288_GRF_SOC_CON0, 7, 1, MFLAGS),
+			RK3288_GRF_SOC_CON(0), 7, 1, MFLAGS),
 	GATE(0, "hclk_vpu", "aclk_vpu", 0,
 			RK3288_CLKGATE_CON(13), 4, GFLAGS),
 
@@ -392,10 +394,10 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 			RK3288_CLKGATE_CON(2), 0, GFLAGS),
 	GATE(0, "aclk_peri", "aclk_peri_src", 0,
 			RK3288_CLKGATE_CON(2), 1, GFLAGS),
-	COMPOSITE_NOMUX(0, "hclk_peri", "aclk_peri_pre", 0,
+	COMPOSITE_NOMUX(0, "hclk_peri", "aclk_peri_src", 0,
 			RK3288_CLKSEL_CON(10), 8, 2, DFLAGS | CLK_DIVIDER_POWER_OF_TWO,
 			RK3288_CLKGATE_CON(2), 2, GFLAGS),
-	COMPOSITE_NOMUX(0, "pclk_peri", "aclk_peri_pre", 0,
+	COMPOSITE_NOMUX(0, "pclk_peri", "aclk_peri_src", 0,
 			RK3288_CLKSEL_CON(10), 12, 2, DFLAGS | CLK_DIVIDER_POWER_OF_TWO,
 			RK3288_CLKGATE_CON(2), 3, GFLAGS),
 
@@ -711,8 +713,9 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 	GATE(0, "sclk_lcdc_pwm1", "xin24m", 0,
 			RK3288_CLKGATE_CON(13), 11, GFLAGS),
 
-	//FIXME: where does this come from
-	GATE(0, "aclk_lcdc_iep", "dummy", 0,
+	MUXGRF(0, "aclk_lcdc_iep_src", aclk_lcdc_iep_p, 0,
+			RK3288_GRF_SOC_CON(6), 2, 1, MFLAGS),
+	GATE(0, "aclk_lcdc_iep", "aclk_lcdc_iep_src", 0,
 			RK3288_CLKGATE_CON(15), 4, GFLAGS),
 
 	//FIXME: these are source from dummy fixed clocks in the upstream source
