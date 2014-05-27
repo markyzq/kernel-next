@@ -81,8 +81,6 @@ static int clk_gate_enable(struct clk_hw *hw)
 
 static void clk_gate_disable(struct clk_hw *hw)
 {
-printk("%s: not disabling %s\n", __func__, __clk_get_name(hw->clk));
-return;
 	clk_gate_endisable(hw, 0);
 }
 
