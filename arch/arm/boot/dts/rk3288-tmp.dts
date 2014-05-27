@@ -14,7 +14,7 @@
 #include "rk3288.dtsi"
 
 / {
-	compatible = "rockchip,rk3288-tmp";
+	compatible = "rockchip,rk3288-tmp", "rockchip,rk3288";
 
 	aliases {
 		serial0 = &uart0;
@@ -42,6 +42,21 @@
 				linux,input-type = <1>;
 				gpio-key,wakeup = <1>;
 				debounce-interval = <100>;
+			};
+		};
+
+		dwmmc@ff0c0000 {
+			num-slots = <1>;
+			status = "okay";
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&sd0_clk &sd0_cmd &sd0_cd &sd0_bus4>;
+//			vmmc-supply = <&vcc_sd0>;
+
+			slot@0 {
+				reg = <0>;
+				bus-width = <4>;
+				disable-wp;
 			};
 		};
 

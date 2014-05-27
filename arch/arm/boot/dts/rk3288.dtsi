@@ -66,6 +66,20 @@
 		compatible = "simple-bus";
 		ranges;
 
+		dwmmc@ff0c0000 {
+			compatible = "rockchip,rk2928-dw-mshc";
+			reg = <0xff0c0000 0x4000>;
+			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			clocks = <&cru HCLK_SDMMC>, <&cru SCLK_SDMMC>;
+			clock-names = "biu", "ciu";
+
+			//FIXME: necessary?
+			fifo-depth = <0x100>;
+		};
+
 		gic: interrupt-controller@ffc01000 {
 			compatible = "arm,cortex-a15-gic";
 			interrupt-controller;
@@ -169,7 +183,9 @@
 		timer {
 			compatible = "arm,armv7-timer";
 			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-				     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+				     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+				     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)> /*,
+				     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>*/;
 			clock-frequency = <24000000>;
 		};
 
@@ -321,13 +337,41 @@
 				/* no rts / cts for uart2 */
 			};
 
+			sd0 {
+				sd0_clk: sd0-clk {
+					rockchip,pins = <RK_GPIO6 20 RK_FUNC_1 &pcfg_pull_down>;
+				};
+
+				sd0_cmd: sd0-cmd {
+					rockchip,pins = <RK_GPIO6 21 RK_FUNC_1 &pcfg_pull_up>;
+				};
+
+				sd0_cd: sd0-cd{
+					rockchip,pins = <RK_GPIO6 22 RK_FUNC_1 &pcfg_pull_up>;
+				};
+
+
+				sd0_bus1: sd0-bus1 {
+					rockchip,pins = <RK_GPIO6 16 RK_FUNC_1 &pcfg_pull_up>;
+				};
+
+				sd0_bus4: sd0-bus4 {
+					rockchip,pins = <RK_GPIO6 16 RK_FUNC_1 &pcfg_pull_up>,
+							<RK_GPIO6 17 RK_FUNC_1 &pcfg_pull_up>,
+							<RK_GPIO6 18 RK_FUNC_1 &pcfg_pull_up>,
+							<RK_GPIO6 19 RK_FUNC_1 &pcfg_pull_up>;
+				};
+			};
+
 		};
 
 		gmac: eth@ff290000 {
 			compatible = "rockchip,rk3288-gmac";
 			reg = <0xff290000 0x10000>;
 			interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
-			interrupt-names = "macirq";
+
+			rockchip,grf = <&grf>;
+
 			//phy-mode = "rmii";
 			phy-mode = "rgmii";
 //			clocks = <&cru PCLK_GMAC>, <&gmac_tx>;
