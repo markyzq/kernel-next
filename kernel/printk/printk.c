@@ -2385,7 +2385,6 @@ int unregister_console(struct console *console)
 	pr_info("%sconsole [%s%d] disabled\n",
 		(console->flags & CON_BOOT) ? "boot" : "" ,
 		console->name, console->index);
-//return -1;
 
 	res = _braille_unregister_console(console);
 	if (res)
