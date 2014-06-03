@@ -28,6 +28,24 @@
 		reg = <0x0 0x80000000>;
 	};
 
+	regulators {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		vcc_sd0: fixed-regulator@0 {
+			compatible = "regulator-fixed";
+			reg = <0>;
+
+			regulator-name = "sdmmc-supply";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			gpio = <&gpio7 11 GPIO_ACTIVE_LOW>;
+			startup-delay-us = <100000>;
+//			vin-supply = <&vcc_io>;
+		};
+	};
+
 	soc {
 		gpio-keys {
 			compatible = "gpio-keys";
@@ -36,12 +54,28 @@
 			autorepeat;
 
 			button@0 {
-				gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
+				gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
 				linux,code = <116>;
 				label = "GPIO Key Power";
 				linux,input-type = <1>;
 				gpio-key,wakeup = <1>;
 				debounce-interval = <100>;
+			};
+		};
+
+		i2c0: i2c@ff650000 {
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c0_xfer>;
+			status = "okay";
+
+			rk808: rk808@1b {
+				compatible = "rockchip,rk808";
+				reg = <0x1b>;
+
+				interrupt-parent = <&gpio0>;
+				interrupts = <4 IRQ_TYPE_EDGE_FALLING>; /* gpio0_a */
+
+				gpios = <&gpio0 0 0>; /* pmic_sleep */
 			};
 		};
 
@@ -51,7 +85,7 @@
 
 			pinctrl-names = "default";
 			pinctrl-0 = <&sd0_clk &sd0_cmd &sd0_cd &sd0_bus4>;
-//			vmmc-supply = <&vcc_sd0>;
+			vmmc-supply = <&vcc_sd0>;
 
 			slot@0 {
 				reg = <0>;
