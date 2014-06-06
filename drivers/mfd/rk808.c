@@ -34,40 +34,38 @@
 
 
 
-#define RK808_BUCK1_CONFIG_REG 0x2e
-#define RK808_BUCK1_ON_REG 0x2f
-#define RK808_BUCK1_SLP_REG 0x30
-#define RK808_BUCK1_DVS_REG 0x31
-#define RK808_BUCK2_CONFIG_REG 0x32
-#define RK808_BUCK2_ON_REG 0x33
-#define RK808_BUCK2_SLP_REG 0x34
-#define RK808_BUCK2_DVS_REG 0x35
-#define RK808_BUCK3_CONFIG_REG 0x36
-#define RK808_BUCK4_CONFIG_REG 0x37
-#define RK808_BUCK4_ON_REG 0x38
-#define RK808_BUCK4_SLP_VSEL_REG 0x39
-#define RK808_BOOST_CONFIG_REG 0x3a
-#define RK808_LDO1_ON_VSEL_REG 0x3b
-#define RK808_LDO1_SLP_VSEL_REG 0x3c
-#define RK808_LDO2_ON_VSEL_REG 0x3d
-#define RK808_LDO2_SLP_VSEL_REG 0x3e
-#define RK808_LDO3_ON_VSEL_REG 0x3f
-#define RK808_LDO3_SLP_VSEL_REG 0x40
-#define RK808_LDO4_ON_VSEL_REG 0x41
-#define RK808_LDO4_SLP_VSEL_REG 0x42
-#define RK808_LDO5_ON_VSEL_REG 0x43
-#define RK808_LDO5_SLP_VSEL_REG 0x44
-#define RK808_LDO6_ON_VSEL_REG 0x45
-#define RK808_LDO6_SLP_VSEL_REG 0x46
-#define RK808_LDO7_ON_VSEL_REG 0x47
-#define RK808_LDO7_SLP_VSEL_REG 0x48
-#define RK808_LDO8_ON_VSEL_REG 0x49
-#define RK808_LDO8_SLP_VSEL_REG 0x4a
+#define RK808_BUCK1_CONFIG_REG		0x2e
+#define RK808_BUCK1_ON_VSEL_REG		0x2f
+#define RK808_BUCK1_SLP_VSEL_REG	0x30
+#define RK808_BUCK1_DVS_VSEL_REG	0x31
+#define RK808_BUCK2_CONFIG_REG		0x32
+#define RK808_BUCK2_ON_VSEL_REG		0x33
+#define RK808_BUCK2_SLP_VSEL_REG	0x34
+#define RK808_BUCK2_DVS_VSEL_REG	0x35
+#define RK808_BUCK3_CONFIG_REG		0x36
+#define RK808_BUCK4_CONFIG_REG		0x37
+#define RK808_BUCK4_ON_VSEL_REG		0x38
+#define RK808_BUCK4_SLP_VSEL_REG	0x39
+#define RK808_BOOST_CONFIG_REG		0x3a
+#define RK808_LDO1_ON_VSEL_REG		0x3b
+#define RK808_LDO1_SLP_VSEL_REG		0x3c
+#define RK808_LDO2_ON_VSEL_REG		0x3d
+#define RK808_LDO2_SLP_VSEL_REG		0x3e
+#define RK808_LDO3_ON_VSEL_REG		0x3f
+#define RK808_LDO3_SLP_VSEL_REG		0x40
+#define RK808_LDO4_ON_VSEL_REG		0x41
+#define RK808_LDO4_SLP_VSEL_REG		0x42
+#define RK808_LDO5_ON_VSEL_REG		0x43
+#define RK808_LDO5_SLP_VSEL_REG		0x44
+#define RK808_LDO6_ON_VSEL_REG		0x45
+#define RK808_LDO6_SLP_VSEL_REG		0x46
+#define RK808_LDO7_ON_VSEL_REG		0x47
+#define RK808_LDO7_SLP_VSEL_REG		0x48
+#define RK808_LDO8_ON_VSEL_REG		0x49
+#define RK808_LDO8_SLP_VSEL_REG		0x4a
 
 
 struct rk808 *g_rk808;
-#define DCDC_RAISE_VOL_BYSTEP 1
-#define DCDC_VOL_STEP 25000  //25mv
 
 static struct mfd_cell rk808s[] = {
 	{
@@ -75,11 +73,9 @@ static struct mfd_cell rk808s[] = {
 	},
 };
 
-#define BUCK_VOL_MASK 0x3f
-#define RK808_LDO_VSEL_MASK 0x3f
-
-#define VOL_MIN_IDX 0x00
-#define VOL_MAX_IDX 0x3f
+#define RK808_BUCK_VSEL_MASK	0x3f
+#define RK808_BUCK4_VSEL_MASK	0xf
+#define RK808_LDO_VSEL_MASK	0x1f
 
 const static int buck_set_vol_base_addr[] = {
 	RK808_BUCK1_ON_REG,
@@ -137,8 +133,7 @@ static const struct regulator_linear_range rk808_ldo6_voltage_ranges[] = {
 	REGULATOR_LINEAR_RANGE(800000, 0, 17, 100000),
 };
 
-
-static struct regulator_ops rk808_ldo_ops = {
+static struct regulator_ops rk808_reg_ops = {
 	.list_voltage		= regulator_list_voltage_linear_range,
 	.map_voltage		= regulator_map_voltage_linear_range,
 	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
@@ -148,10 +143,81 @@ static struct regulator_ops rk808_ldo_ops = {
 	.is_enabled		= regulator_is_enabled_regmap,
 };
 
+static struct regulator_ops rk808_switch_ops = {
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+	.is_enabled = regulator_is_enabled_regmap,
+};
+
+static const struct regulator_desc rk808_reg[] = {
 	{
+		.name = "DCDC_REG1",
+		.id = RK808_ID_DCDC1,
+		.ops = &rk808_reg_ops,
+		.type = REGULATOR_VOLTAGE,
+		.n_voltages = 64,
+		.linear_ranges = rk808_buck_voltage_ranges,
+		.n_linear_ranges = ARRAY_SIZE(rk808_buck_voltage_ranges),
+		.vsel_reg = RK808_BUCK1_ON_VSEL_REG,
+		.vsel_mask = RK808_BUCK_VSEL_MASK,
+		.enable_reg = RK808_DCDC_EN_REG,
+		.enable_mask = BIT(0),
+		.owner = THIS_MODULE,
+	}, {
+		.name = "DCDC_REG2",
+		.id = RK808_ID_DCDC2,
+		.ops = &rk808_reg_ops,
+		.type = REGULATOR_VOLTAGE,
+		.n_voltages = 64,
+		.linear_ranges = rk808_buck_voltage_ranges,
+		.n_linear_ranges = ARRAY_SIZE(rk808_buck_voltage_ranges),
+		.vsel_reg = RK808_BUCK2_ON_VSEL_REG,
+		.vsel_mask = RK808_BUCK_VSEL_MASK,
+		.enable_reg = RK808_DCDC_EN_REG,
+		.enable_mask = BIT(1),
+		.owner = THIS_MODULE,
+	}, {
+		.name = "DCDC_REG3",
+		.id = RK808_ID_DCDC3,
+		.ops = &rk808_switch_ops,
+		.type = REGULATOR_VOLTAGE,
+		.n_voltages = 1,
+		.enable_reg = RK808_DCDC_EN_REG,
+		.enable_mask = BIT(2),
+		.owner = THIS_MODULE,
+	}, {
+		.name = "DCDC_REG4",
+		.id = RK808_ID_DCDC4,
+		.ops = &rk808_reg_ops,
+		.type = REGULATOR_VOLTAGE,
+		.n_voltages = 17,
+		.linear_ranges = rk808_buck4_voltage_ranges,
+		.n_linear_ranges = ARRAY_SIZE(rk808_buck4_voltage_ranges),
+		.vsel_reg = RK808_BUCK4_ON_VSEL_REG,
+		.vsel_mask = RK808_BUCK4_VSEL_MASK,
+		.enable_reg = RK808_DCDC_EN_REG,
+		.enable_mask = BIT(3),
+		.owner = THIS_MODULE,
+	}, {
+		.name = "SWITCH_REG1",
+		.id = RK808_ID_SWITCH1,
+		.ops = &rk808_switch_ops,
+		.type = REGULATOR_VOLTAGE,
+		.enable_reg = RK808_DCDC_EN_REG,
+		.enable_mask = BIT(5),
+		.owner = THIS_MODULE,
+	}, {
+		.name = "SWITCH_REG2",
+		.id = RK808_ID_SWITCH2,
+		.ops = &rk808_switch_ops,
+		.type = REGULATOR_VOLTAGE,
+		.enable_reg = RK808_DCDC_EN_REG,
+		.enable_mask = BIT(6),
+		.owner = THIS_MODULE,
+	}, {
 		.name = "LDO_REG1",
 		.id = RK808_ID_LDO1,
-		.ops = &rk808_ldo_ops,
+		.ops = &rk808_reg_ops,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = 17,
 		.linear_ranges = rk808_ldo_voltage_ranges,
@@ -159,12 +225,12 @@ static struct regulator_ops rk808_ldo_ops = {
 		.vsel_reg = RK808_LDO1_ON_VSEL_REG,
 		.vsel_mask = RK808_LDO_VSEL_MASK,
 		.enable_reg = RK808_LDO_EN_REG,
-		.enable_mask = 0,
+		.enable_mask = BIT(0),
 		.owner = THIS_MODULE,
 	}, {
 		.name = "LDO_REG2",
 		.id = RK808_ID_LDO2,
-		.ops = &rk808_ldo_ops,
+		.ops = &rk808_reg_ops,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = 17,
 		.linear_ranges = rk808_ldo_voltage_ranges,
@@ -172,25 +238,25 @@ static struct regulator_ops rk808_ldo_ops = {
 		.vsel_reg = RK808_LDO2_ON_VSEL_REG,
 		.vsel_mask = RK808_LDO_VSEL_MASK,
 		.enable_reg = RK808_LDO_EN_REG,
-		.enable_mask = 1,
+		.enable_mask = BIT(1),
 		.owner = THIS_MODULE,
 	}, {
 		.name = "LDO_REG3",
 		.id = RK808_ID_LDO3,
-		.ops = &rk808_ldo_ops,
+		.ops = &rk808_reg_ops,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = 16,
 		.linear_ranges = rk808_ldo3_voltage_ranges,
 		.n_linear_ranges = ARRAY_SIZE(rk808_ldo3_voltage_ranges),
 		.vsel_reg = RK808_LDO3_ON_VSEL_REG,
-		.vsel_mask = RK808_LDO_VSEL_MASK,
+		.vsel_mask = RK808_BUCK4_VSEL_MASK,
 		.enable_reg = RK808_LDO_EN_REG,
-		.enable_mask = 2,
+		.enable_mask = BIT(2),
 		.owner = THIS_MODULE,
 	}, {
 		.name = "LDO_REG4",
 		.id = RK808_ID_LDO4,
-		.ops = &rk808_ldo_ops,
+		.ops = &rk808_reg_ops,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = 17,
 		.linear_ranges = rk808_ldo_voltage_ranges,
@@ -198,12 +264,12 @@ static struct regulator_ops rk808_ldo_ops = {
 		.vsel_reg = RK808_LDO4_ON_VSEL_REG,
 		.vsel_mask = RK808_LDO_VSEL_MASK,
 		.enable_reg = RK808_LDO_EN_REG,
-		.enable_mask = 3,
+		.enable_mask = BIT(3),
 		.owner = THIS_MODULE,
 	}, {
 		.name = "LDO_REG5",
 		.id = RK808_ID_LDO5,
-		.ops = &rk808_ldo_ops,
+		.ops = &rk808_reg_ops,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = 17,
 		.linear_ranges = rk808_ldo_voltage_ranges,
@@ -211,12 +277,12 @@ static struct regulator_ops rk808_ldo_ops = {
 		.vsel_reg = RK808_LDO5_ON_VSEL_REG,
 		.vsel_mask = RK808_LDO_VSEL_MASK,
 		.enable_reg = RK808_LDO_EN_REG,
-		.enable_mask = 4,
+		.enable_mask = BIT(4),
 		.owner = THIS_MODULE,
 	}, {
 		.name = "LDO_REG6",
 		.id = RK808_ID_LDO6,
-		.ops = &rk808_ldo_ops,
+		.ops = &rk808_reg_ops,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = 18,
 		.linear_ranges = rk808_ldo6_voltage_ranges,
@@ -224,12 +290,12 @@ static struct regulator_ops rk808_ldo_ops = {
 		.vsel_reg = RK808_LDO6_ON_VSEL_REG,
 		.vsel_mask = RK808_LDO_VSEL_MASK,
 		.enable_reg = RK808_LDO_EN_REG,
-		.enable_mask = 5,
+		.enable_mask = BIT(5),
 		.owner = THIS_MODULE,
 	}, {
 		.name = "LDO_REG7",
 		.id = RK808_ID_LDO7,
-		.ops = &rk808_ldo_ops,
+		.ops = &rk808_reg_ops,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = 18,
 		.linear_ranges = rk808_ldo6_voltage_ranges,
@@ -237,12 +303,12 @@ static struct regulator_ops rk808_ldo_ops = {
 		.vsel_reg = RK808_LDO7_ON_VSEL_REG,
 		.vsel_mask = RK808_LDO_VSEL_MASK,
 		.enable_reg = RK808_LDO_EN_REG,
-		.enable_mask = 6,
+		.enable_mask = BIT(6),
 		.owner = THIS_MODULE,
 	}, {
 		.name = "LDO_REG8",
 		.id = RK808_ID_LDO8,
-		.ops = &rk808_ldo_ops,
+		.ops = &rk808_reg_ops,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = 17,
 		.linear_ranges = rk808_ldo_voltage_ranges,
@@ -250,393 +316,16 @@ static struct regulator_ops rk808_ldo_ops = {
 		.vsel_reg = RK808_LDO8_ON_VSEL_REG,
 		.vsel_mask = RK808_LDO_VSEL_MASK,
 		.enable_reg = RK808_LDO_EN_REG,
-		.enable_mask = 7,
+		.enable_mask = BIT(7),
 		.owner = THIS_MODULE,
 	},
-
-
-static int rk808_dcdc_list_voltage(struct regulator_dev *dev, unsigned selector)
-{
-	int volt;
-	int buck = rdev_get_id(dev) - RK808_DCDC1;
-
-	if (selector < 0x0 ||selector > BUCK_VOL_MASK )
-		return -EINVAL;
-
-	switch (buck) {
-	case 0:
-	case 1:
-		volt = 700000 + selector * 12500;
-		break;
-	case 3:
-		volt = 1800000 + selector * 100000;
-		break;
-	case 2:
-		volt = 1200000;
-		break;
-	default:
-		BUG();
-		return -EINVAL;
-	}
-
-	return  volt ;
-}
-static int rk808_dcdc_is_enabled(struct regulator_dev *dev)
-{
-	struct rk808 *rk808 = rdev_get_drvdata(dev);
-	int buck = rdev_get_id(dev) - RK808_DCDC1;
-	u16 val;
-	
-	val = rk808_reg_read(rk808, RK808_DCDC_EN_REG);
-	if (val < 0)
-		return val;
-	if (val & (1 << buck))
-		return 1;
-	else
-		return 0; 	
-}
-static int rk808_dcdc_enable(struct regulator_dev *dev)
-{
-	struct rk808 *rk808 = rdev_get_drvdata(dev);
-	int buck = rdev_get_id(dev) - RK808_DCDC1;
-
-	return rk808_set_bits(rk808, RK808_DCDC_EN_REG, 1 << buck, 1 << buck);
-
-}
-static int rk808_dcdc_disable(struct regulator_dev *dev)
-{
-	struct rk808 *rk808 = rdev_get_drvdata(dev);
-	int buck = rdev_get_id(dev) - RK808_DCDC1;
-	
-	 return rk808_set_bits(rk808, RK808_DCDC_EN_REG, 1 << buck , 0);
-}
-
-static int rk808_dcdc_suspend_enable(struct regulator_dev *dev)
-{
-	struct rk808 *rk808 = rdev_get_drvdata(dev);
-	int buck = rdev_get_id(dev) - RK808_DCDC1;
-
-	return rk808_set_bits(rk808, RK808_SLEEP_SET_OFF_REG1, 1 << buck, 0);
-
-}
-static int rk808_dcdc_suspend_disable(struct regulator_dev *dev)
-{
-	struct rk808 *rk808 = rdev_get_drvdata(dev);
-	int buck = rdev_get_id(dev) - RK808_DCDC1;
-	
-	 return rk808_set_bits(rk808, RK808_SLEEP_SET_OFF_REG1, 1 << buck , 1 << buck);
-}
-static int rk808_dcdc_get_voltage(struct regulator_dev *dev)
-{
-	struct rk808 *rk808 = rdev_get_drvdata(dev);
-	int buck = rdev_get_id(dev) - RK808_DCDC1;
-	u16 reg = 0;
-	int val;
-
-	reg = rk808_reg_read(rk808,rk808_BUCK_SET_VOL_REG(buck));
-	
-	reg &= BUCK_VOL_MASK;
-    	val = rk808_dcdc_list_voltage(dev,reg);
-	return val;
-}
-
-static int rk808_dcdc_set_voltage_time_sel(struct regulator_dev *dev,   unsigned int old_selector,
-				     unsigned int new_selector)
-{
-	int old_volt, new_volt;
-	
-	old_volt = rk808_dcdc_list_voltage(dev, old_selector);
-	if (old_volt < 0)
-		return old_volt;
-	
-	new_volt = rk808_dcdc_list_voltage(dev, new_selector);
-	if (new_volt < 0)
-		return new_volt;
-
-	return DIV_ROUND_UP(abs(old_volt - new_volt)*2, 2500);
-}
-
-static struct regulator_ops rk808_dcdc_ops = { 
-	.set_voltage = rk808_dcdc_set_voltage,
-	.get_voltage = rk808_dcdc_get_voltage,
-	.list_voltage= rk808_dcdc_list_voltage,
-	.is_enabled = rk808_dcdc_is_enabled,
-	.enable = rk808_dcdc_enable,
-	.disable = rk808_dcdc_disable,
-	.set_suspend_enable =rk808_dcdc_suspend_enable,
-	.set_suspend_disable =rk808_dcdc_suspend_disable,
-	.get_mode = rk808_dcdc_get_mode,
-	.set_mode = rk808_dcdc_set_mode,
-	.set_suspend_mode = rk808_dcdc_set_suspend_mode,
-	.set_suspend_voltage = rk808_dcdc_set_sleep_voltage,
-	.set_voltage_time_sel = rk808_dcdc_set_voltage_time_sel,
 };
 
-
-
-
-static struct regulator_desc regulators[] = {
-
-        {
-		.name = "RK_DCDC1",
-		.id = 0,
-		.ops = &rk808_dcdc_ops,
-		.n_voltages = ARRAY_SIZE(buck_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_DCDC2",
-		.id = 1,
-		.ops = &rk808_dcdc_ops,
-		.n_voltages = ARRAY_SIZE(buck_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_DCDC3",
-		.id = 2,
-		.ops = &rk808_dcdc_ops,
-		.n_voltages = ARRAY_SIZE(buck4_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_DCDC4",
-		.id = 3,
-		.ops = &rk808_dcdc_ops,
-		.n_voltages = ARRAY_SIZE(buck4_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-
-	{
-		.name = "RK_LDO1",
-		.id =4,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(ldo_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_LDO2",
-		.id = 5,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(ldo_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_LDO3",
-		.id = 6,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(ldo3_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_LDO4",
-		.id = 7,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(ldo_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-
-	{
-		.name = "RK_LDO5",
-		.id =8,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(ldo_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_LDO6",
-		.id = 9,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(ldo6_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_LDO7",
-		.id = 10,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(ldo6_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_LDO8",
-		.id = 11,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(ldo_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_LDO9",
-		.id = 12,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(buck4_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	{
-		.name = "RK_LDO10",
-		.id = 13,
-		.ops = &rk808_ldo_ops,
-		.n_voltages = ARRAY_SIZE(buck4_voltage_map),
-		.type = REGULATOR_VOLTAGE,
-		.owner = THIS_MODULE,
-	},
-	
-};
-
-/*
- *
- */
- int rk808_i2c_read(struct rk808 *rk808, char reg, int count,u8 *dest)
-{
-	struct i2c_client *i2c = rk808->i2c;
-	int ret;
-    struct i2c_adapter *adap;
-    struct i2c_msg msgs[2];
-
-    if(!i2c)
-		return ret;
-
-	if (count != 1)
-		return -EIO;  
-  
-    adap = i2c->adapter;		
-    
-    msgs[0].addr = i2c->addr;
-    msgs[0].buf = &reg;
-    msgs[0].flags = i2c->flags;
-    msgs[0].len = 1;
-    
-    msgs[1].buf = (u8 *)dest;
-    msgs[1].addr = i2c->addr;
-    msgs[1].flags =  i2c->flags |I2C_M_RD;
-    msgs[1].len = 1;
-
-    ret = i2c_transfer(adap, msgs, 2);
-
-	DBG("***run in %s %x  % x\n",__FUNCTION__,i2c->addr,*(msgs[1].buf));
-    return 0;
-}
-
-int rk808_i2c_write(struct rk808 *rk808, char reg, int count,  const u8 src)
-{
-	int ret=-1;
-	struct i2c_client *i2c = rk808->i2c;
-	struct i2c_adapter *adap;
-	struct i2c_msg msg;
-	char tx_buf[2];
-
-	if(!i2c)
-		return ret;
-	if (count != 1)
-		return -EIO;
-    
-	adap = i2c->adapter;		
-	tx_buf[0] = reg;
-	tx_buf[1] = src;
-	
-	msg.addr = i2c->addr;
-	msg.buf = &tx_buf[0];
-	msg.len = 1 +1;
-	msg.flags = i2c->flags;   
-
-	ret = i2c_transfer(adap, &msg, 1);
-	return ret;	
-}
-
-u8 rk808_reg_read(struct rk808 *rk808, u8 reg)
-{
-	u8 val = 0;
-
-	mutex_lock(&rk808->io_lock);
-
-	rk808_i2c_read(rk808, reg, 1, &val);
-
-	DBG("reg read 0x%02x -> 0x%02x\n", (int)reg, (unsigned)val&0xff);
-
-	mutex_unlock(&rk808->io_lock);
-
-	return val & 0xff;	
-}
-EXPORT_SYMBOL_GPL(rk808_reg_read);
-
-int rk808_reg_write(struct rk808 *rk808, u8 reg, u8 val)
-{
-	int err =0;
-
-	mutex_lock(&rk808->io_lock);
-
-	err = rk808_i2c_write(rk808, reg, 1,val);
-	if (err < 0)
-		dev_err(rk808->dev, "Write for reg 0x%x failed\n", reg);
-
-	mutex_unlock(&rk808->io_lock);
-	return err;
-}
-EXPORT_SYMBOL_GPL(rk808_reg_write);
-
- int rk808_set_bits(struct rk808 *rk808, u8 reg, u8 mask, u8 val)
-{
-	u8 tmp;
-	int ret;
-
-	mutex_lock(&rk808->io_lock);
-
-	ret = rk808_i2c_read(rk808, reg, 1, &tmp);
-	DBG("1 reg read 0x%02x -> 0x%02x\n", (int)reg, (unsigned)tmp&0xff);
-	tmp = (tmp & ~mask) | val;
-	if (ret == 0) {
-		ret = rk808_i2c_write(rk808, reg, 1, tmp);
-		DBG("reg write 0x%02x -> 0x%02x\n", (int)reg, (unsigned)val&0xff);
-	}
-	rk808_i2c_read(rk808, reg, 1, &tmp);
-	DBG("2 reg read 0x%02x -> 0x%02x\n", (int)reg, (unsigned)tmp&0xff);
-	mutex_unlock(&rk808->io_lock);
-
-	return 0;//ret;	
-}
-EXPORT_SYMBOL_GPL(rk808_set_bits);
-
-int rk808_clear_bits(struct rk808 *rk808, u8 reg, u8 mask)
-{
-	u8 data;
-	int err;
-
-	mutex_lock(&rk808->io_lock);
-	err = rk808_i2c_read(rk808, reg, 1, &data);
-	if (err <0) {
-		dev_err(rk808->dev, "read from reg %x failed\n", reg);
-		goto out;
-	}
-
-	data &= ~mask;
-	err = rk808_i2c_write(rk808, reg, 1, data);
-	if (err <0)
-		dev_err(rk808->dev, "write to reg %x failed\n", reg);
-
-out:
-	mutex_unlock(&rk808->io_lock);
-	return err;
-}
-EXPORT_SYMBOL_GPL(rk808_clear_bits);
-
-extern void rk28_send_wakeup_key(void);
 static irqreturn_t rk808_vbat_lo_irq(int irq, void *data)
 {
 	int ret;
         printk("rk808 vbat low %s:irq=%d\n",__func__,irq);
 	ret = regmap_update_bits(g_rk808->regmap,0x4c,(0x1 << 1),(0x1 <<1));
-//	rk28_send_wakeup_key();
         return IRQ_HANDLED;
 }
 
@@ -646,33 +335,32 @@ static struct of_device_id rk808_of_match[] = {
 	{ },
 };
 MODULE_DEVICE_TABLE(of, rk808_of_match);
-#endif
 
-#ifdef CONFIG_OF
+
 static struct of_regulator_match rk808_reg_matches[] = {
-	{ .name = "rk_dcdc1", .driver_data = (void *)0 },
-	{ .name = "rk_dcdc2", .driver_data = (void *)1 },
-	{ .name = "rk_dcdc3", .driver_data = (void *)2 },
-	{ .name = "rk_dcdc4", .driver_data = (void *)3 },
-	{ .name = "rk_ldo1", .driver_data = (void *)4 },
-	{ .name = "rk_ldo2", .driver_data = (void *)5 },
-	{ .name = "rk_ldo3", .driver_data = (void *)6 },
-	{ .name = "rk_ldo4", .driver_data = (void *)7 },
-	{ .name = "rk_ldo5", .driver_data = (void *)8 },
-	{ .name = "rk_ldo6", .driver_data = (void *)9 },
-	{ .name = "rk_ldo7", .driver_data = (void *)10 },
-	{ .name = "rk_ldo8", .driver_data = (void *)11 },
-	{ .name = "rk_ldo9", .driver_data = (void *)12 },
-	{ .name = "rk_ldo10", .driver_data = (void *)13 },
+	[RK808_ID_DCDC1]	= { .name = "DCDC_REG1" },
+	[RK808_ID_DCDC2]	= { .name = "DCDC_REG2" },
+	[RK808_ID_DCDC3]	= { .name = "DCDC_REG3" },
+	[RK808_ID_DCDC4]	= { .name = "DCDC_REG4" },
+	[RK808_ID_SWITCH1]	= { .name = "SWITCH_REG1" },
+	[RK808_ID_SWITCH2]	= { .name = "SWITCH_REG2" },
+	[RK808_ID_LDO1]		= { .name = "LDO_REG1" },
+	[RK808_ID_LDO2]		= { .name = "LDO_REG2" },
+	[RK808_ID_LDO3]		= { .name = "LDO_REG3" },
+	[RK808_ID_LDO4]		= { .name = "LDO_REG4" },
+	[RK808_ID_LDO5]		= { .name = "LDO_REG5" },
+	[RK808_ID_LDO6]		= { .name = "LDO_REG6" },
+	[RK808_ID_LDO7]		= { .name = "LDO_REG7" },
+	[RK808_ID_LDO8]		= { .name = "LDO_REG8" },
 };
 
 static struct rk808_board *rk808_parse_dt(struct rk808 *rk808)
 {
 	struct rk808_board *pdata;
-	struct device_node *regs,*rk808_pmic_np;
+	struct device_node *np, *reg_np;
 	int i, count;
 
-	rk808_pmic_np = of_node_get(rk808->dev->of_node);
+	rk808_pmic_np = rk808->dev->of_node);
 	if (!rk808_pmic_np) {
 		printk("could not find pmic sub-node\n");
 		return NULL;
@@ -851,7 +539,7 @@ static int rk808_pre_init(struct rk808 *rk808)
 	return 0;
 }
 
-static int rk808_i2c_probe(struct i2c_client *client, const struct i2c_device_id *id)
+static int rk808_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
 	struct rk808 *rk808;	
 	struct rk808_board *pdev;
@@ -977,7 +665,7 @@ err:
 
 }
 
-static int rk808_i2c_remove(struct i2c_client *i2c)
+static int rk808_remove(struct i2c_client *i2c)
 {
 	struct rk808 *rk808 = i2c_get_clientdata(i2c);
 	int i;
@@ -992,7 +680,7 @@ static int rk808_i2c_remove(struct i2c_client *i2c)
 	return 0;
 }
 
-static const struct i2c_device_id rk808_i2c_id[] = {
+static const struct i2c_device_id rk808_ids[] = {
        { "rk808", 0 },
        { }
 };
@@ -1005,29 +693,12 @@ static struct i2c_driver rk808_i2c_driver = {
 		.owner = THIS_MODULE,
 		.of_match_table =of_match_ptr(rk808_of_match),
 	},
-	.probe    = rk808_i2c_probe,
-	.remove   = rk808_i2c_remove,
-	.id_table = rk808_i2c_id,
+	.probe    = rk808_probe,
+	.remove   = rk808_remove,
+	.id_table = rk808__ids,
 };
 
-static int __init rk808_module_init(void)
-{
-	int ret;
-	ret = i2c_add_driver(&rk808_i2c_driver);
-	if (ret != 0)
-		pr_err("Failed to register I2C driver: %d\n", ret);
-	return ret;
-}
-//module_init(rk808_module_init);
-//subsys_initcall(rk808_module_init);
-//rootfs_initcall(rk808_module_init);
-subsys_initcall_sync(rk808_module_init);
-
-static void __exit rk808_module_exit(void)
-{
-	i2c_del_driver(&rk808_i2c_driver);
-}
-module_exit(rk808_module_exit);
+module_i2c_driver(rk808_i2c_driver);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("zhangqing <zhangqing@rock-chips.com>");

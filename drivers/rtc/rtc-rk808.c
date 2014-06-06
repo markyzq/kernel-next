@@ -160,6 +160,8 @@ static int rk808_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		dev_err(dev, "Failed to write RTC control: %d\n", ret);
 		return ret;
 	}
+
+
 	rk808_reg_write(rk808,0x00,rtc_data[0]);
 	rk808_reg_write(rk808,0x01,rtc_data[1]);
 	rk808_reg_write(rk808,0x02,rtc_data[2]);
@@ -198,12 +200,7 @@ static int rk808_rtc_readalarm(struct device *dev, struct rtc_wkalrm *alrm)
 	int ret;
 	unsigned char alrm_data[ALL_ALM_REGS + 1];
 
-	alrm_data[0] = rk808_reg_read(rk808_rtc->rk808,0x08);
-        alrm_data[1] = rk808_reg_read(rk808_rtc->rk808,0x09);
-        alrm_data[2] = rk808_reg_read(rk808_rtc->rk808,0x0a);
-        alrm_data[3] = rk808_reg_read(rk808_rtc->rk808,0x0b);
-        alrm_data[4] = rk808_reg_read(rk808_rtc->rk808,0x0c);
-        alrm_data[5] = rk808_reg_read(rk808_rtc->rk808,0x0d);
+	ret = regmap_bulk_read(struct regmap *map, 0x08, alrm_data, 6)
 
 	/* some of these fields may be wildcard/"match all" */
 	alrm->time.tm_sec = bcd2bin(alrm_data[0]);
@@ -390,7 +387,6 @@ static irqreturn_t rk808_per_irq(int irq, void *data)
 
 static const struct rtc_class_ops rk808_rtc_ops = {
 	.read_time = rk808_rtc_readtime,
-	//.set_mmss = rk808_rtc_set_mmss,
 	.set_time = rk808_rtc_set_time,
 	.read_alarm = rk808_rtc_readalarm,
 	.set_alarm = rk808_rtc_setalarm,
@@ -437,24 +433,19 @@ static int rk808_rtc_resume(struct device *dev)
 	return 0;
 }
 
-/* Unconditionally disable the alarm */
-static int rk808_rtc_freeze(struct device *dev)
-{
-	struct platform_device *pdev = to_platform_device(dev);
-	struct rk808_rtc *rk808_rtc = dev_get_drvdata(&pdev->dev);
-	int ret;
-	
-	ret = rk808_rtc_stop_alarm(rk808_rtc);
-	if (ret != 0)
-		dev_err(&pdev->dev, "Failed to stop RTC alarm: %d\n", ret);
-
-	return 0;
-}
 #else
 #define rk808_rtc_suspend NULL
 #define rk808_rtc_resume NULL
 #define rk808_rtc_freeze NULL
 #endif
+
+static const struct dev_pm_ops rk808_rtc_pm_ops = {
+	.suspend = rk808_rtc_suspend,
+	.resume = rk808_rtc_resume,
+	.poweroff = rk808_rtc_suspend,
+};
+
+
 extern struct rk808 *g_rk808;
 struct platform_device *rk808_pdev;
 struct rtc_time tm_def = {	//	2012.1.1 12:00:00 Saturday
@@ -589,17 +580,6 @@ err:
 	kfree(rk808_rtc);
 	return ret;
 }
-
-static const struct dev_pm_ops rk808_rtc_pm_ops = {
-	.suspend = rk808_rtc_suspend,
-	.resume = rk808_rtc_resume,
-
-	.freeze = rk808_rtc_freeze,
-	.thaw = rk808_rtc_resume,
-	.restore = rk808_rtc_resume,
-
-	.poweroff = rk808_rtc_suspend,
-};
 
 static struct platform_driver rk808_rtc_driver = {
 	.probe = rk808_rtc_probe,
