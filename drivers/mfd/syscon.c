@@ -18,6 +18,7 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/of_platform.h>
+#include <linux/platform_data/syscon.h>
 #include <linux/platform_device.h>
 #include <linux/regmap.h>
 #include <linux/slab.h>
@@ -121,7 +122,11 @@ struct regmap *syscon_regmap_lookup_by_phandle(struct device_node *np,
 	struct device_node *syscon_np;
 	struct regmap *regmap;
 
-	syscon_np = of_parse_phandle(np, property, 0);
+	if (property)
+		syscon_np = of_parse_phandle(np, property, 0);
+	else
+		syscon_np = np;
+
 	if (!syscon_np)
 		return ERR_PTR(-ENODEV);
 
