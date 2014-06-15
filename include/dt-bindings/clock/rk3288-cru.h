@@ -35,6 +35,12 @@
 #define SCLK_UART2		79
 #define SCLK_UART3		80
 #define SCLK_UART4		81
+#define SCLK_I2S		82
+#define SCLK_SPDIF		83
+#define SCLK_SPDIF8CH		84
+
+#define DCLK_LCDC0		190
+#define DCLK_LCDC1		191
 
 /* aclk gates from 192*/
 #define ACLK_GPU		192
@@ -42,6 +48,8 @@
 #define ACLK_DMAC2		194
 #define ACLK_MMU		195
 #define ACLK_GMAC		196
+#define ACLK_LCDC0		197
+#define ACLK_LCDC1		198
 
 /* pclk gates from 320*/
 #define PCLK_GPIO0		320
@@ -54,32 +62,35 @@
 #define PCLK_GPIO7		327
 #define PCLK_GPIO8		328
 #define PCLK_GRF		329
-#define PCLK_PMU		330
-#define PCLK_I2C0		331
-#define PCLK_I2C1		332
-#define PCLK_I2C2		333
-#define PCLK_I2C3		334
-#define PCLK_I2C4		335
-#define PCLK_I2C5		336
-#define PCLK_SPI0		337
-#define PCLK_SPI1		338
-#define PCLK_SPI2		339
-#define PCLK_PS2C		340
-#define PCLK_UART0		330
-#define PCLK_UART1		331
-#define PCLK_UART2		332
-#define PCLK_UART3		333
-#define PCLK_UART4		334
-#define PCLK_TSADC		335
-#define PCLK_SARADC		336
-#define PCLK_SIM		337
-#define PCLK_GMAC		338
+#define PCLK_SGRF		330
+#define PCLK_PMU		331
+#define PCLK_I2C0		332
+#define PCLK_I2C1		333
+#define PCLK_I2C2		334
+#define PCLK_I2C3		335
+#define PCLK_I2C4		336
+#define PCLK_I2C5		337
+#define PCLK_SPI0		338
+#define PCLK_SPI1		339
+#define PCLK_SPI2		340
+#define PCLK_UART0		341
+#define PCLK_UART1		342
+#define PCLK_UART2		343
+#define PCLK_UART3		344
+#define PCLK_UART4		345
+#define PCLK_TSADC		346
+#define PCLK_SARADC		347
+#define PCLK_SIM		348
+#define PCLK_GMAC		349
+#define PCLK_PWM		350
+#define PCLK_RKPWM		351
+#define PCLK_PS2C		352
 
 /* hclk gates from 448 */
 #define HCLK_GPS		448
 #define HCLK_OTG0		449
-#define HCLK_HOST0		450
-#define HCLK_HOST1		451
+#define HCLK_USBHOST0		450
+#define HCLK_USBHOST1		451
 #define HCLK_HSIC		452
 #define HCLK_NANDC0		453
 #define HCLK_NANDC1		454
@@ -89,5 +100,11 @@
 #define HCLK_SDIO1		458
 #define HCLK_EMMC		459
 #define HCLK_HSADC		460
+#define HCLK_CRYPTO		461
+#define HCLK_I2S		462
+#define HCLK_SPDIF		463
+#define HCLK_SPDIF8CH		464
+#define HCLK_LCDC0		465
+#define HCLK_LCDC1		466
 
 #define CLK_NR_CLKS		576
