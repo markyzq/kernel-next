@@ -35,7 +35,7 @@
 #define SCLK_UART2		79
 #define SCLK_UART3		80
 #define SCLK_UART4		81
-#define SCLK_I2S		82
+#define SCLK_I2S0		82
 #define SCLK_SPDIF		83
 #define SCLK_SPDIF8CH		84
 #define SCLK_TIMER0		85
@@ -45,9 +45,21 @@
 #define SCLK_TIMER4		89
 #define SCLK_TIMER5		90
 #define SCLK_TIMER6		91
+#define SCLK_HSADC		92
+#define SCLK_OTGPHY0		93
+#define SCLK_OTGPHY1		94
+#define SCLK_OTGPHY2		95
+#define SCLK_OTG_ADP		96
+#define SCLK_HSICPHY480M	97
+#define SCLK_HSICPHY12M		98
+#define SCLK_MACREF		99
+#define SCLK_LCDC_PWM0		100
+#define SCLK_LCDC_PWM1		101
+#define SCLK_MAC_RX		102
+#define SCLK_MAC_TX		103
 
-#define DCLK_LCDC0		190
-#define DCLK_LCDC1		191
+#define DCLK_VOP0		190
+#define DCLK_VOP1		191
 
 /* aclk gates from 192*/
 #define ACLK_GPU		192
@@ -55,8 +67,10 @@
 #define ACLK_DMAC2		194
 #define ACLK_MMU		195
 #define ACLK_GMAC		196
-#define ACLK_LCDC0		197
-#define ACLK_LCDC1		198
+#define ACLK_VOP0		197
+#define ACLK_VOP1		198
+#define ACLK_CRYPTO		199
+#define ACLK_RGA		200
 
 /* pclk gates from 320*/
 #define PCLK_GPIO0		320
@@ -110,11 +124,11 @@
 #define HCLK_EMMC		459
 #define HCLK_HSADC		460
 #define HCLK_CRYPTO		461
-#define HCLK_I2S		462
+#define HCLK_I2S0		462
 #define HCLK_SPDIF		463
 #define HCLK_SPDIF8CH		464
-#define HCLK_LCDC0		465
-#define HCLK_LCDC1		466
+#define HCLK_VOP0		465
+#define HCLK_VOP1		466
 #define HCLK_ROM		467
 #define HCLK_IEP		468
 #define HCLK_ISP		469
@@ -122,7 +136,7 @@
 
 #define CLK_NR_CLKS		576
 
-
+/* soft-reset indices */
 #define SRST_CORE0		0
 #define SRST_CORE1		1
 #define SRST_CORE2		2
@@ -147,7 +161,7 @@
 #define SRST_ROM		20
 #define SRST_SPDIF8CH		21
 #define SRST_TIMER		22
-#define SRST_I2S		23
+#define SRST_I2S0		23
 #define SRST_SPDIF		24
 #define SRST_TIMER0		25
 #define SRST_TIMER1		26
@@ -173,3 +187,99 @@
 #define SRST_I2C3		45
 #define SRST_I2C4		46
 #define SRST_I2C5		47
+
+#define SRST_DWPWM		48
+#define SRST_MMC_PERI		49
+#define SRST_PERIPH_MMU		50
+#define SRST_DAP		51
+#define SRST_DAP_SYS		52
+#define SRST_TPIU		53
+#define SRST_PMU_APB		54
+#define SRST_GRF		55
+#define SRST_PMU		56
+#define SRST_PERIPH_AXI		57
+#define SRST_PERIPH_AHB		58
+#define SRST_PERIPH_APB		59
+#define SRST_PERIPH_NIU		60
+#define SRST_PDPERI_AHB_ARBI	61
+#define SRST_EMEM		62
+#define SRST_USB_PERI		63
+
+#define SRST_DMAC2		64
+/* 65 reserved */
+#define SRST_MAC		66
+#define SRST_GPS		67
+/* 68 reserved */
+#define SRST_RKPWM		69
+/* 70 reserved */
+#define SRST_CCP		71
+#define SRST_USBHOST0		72
+#define SRST_HSIC		73
+#define SRST_HSIC_AUX		74
+#define SRST_HSIC_PHY		75
+#define SRST_HSADC		76
+#define SRST_NANDC0		77
+#define SRST_NANDC1		78
+/* 79 reserved */
+
+#define SRST_TZPC		80
+/* 81, 82 reserved */
+#define SRST_SPI0		83
+#define SRST_SPI1		84
+#define SRST_SPI2		85
+/* 86 reserved */
+#define SRST_SARADC		87
+#define SRST_PDALIVE_NIU	88
+#define SRST_PDPMU_INTMEM	89
+#define SRST_PDPMU_NIU		90
+#define SRST_SGRF		91
+/* 92,93,94,95 reserved */
+
+#define SRST_VIO_ARBI		96
+#define SRST_RGA_NIU		97
+#define SRST_VIO0_NIU_AXI	98
+#define SRST_VIO_NIU_AHB	99
+#define SRST_LCDC0_AXI		100
+#define SRST_LCDC0_AHB		101
+#define SRST_LCDC0_DCLK		102
+#define SRST_VIO1_NIU_AXI	103
+#define SRST_VIP		104
+#define SRST_RGA_CORE		105
+#define SRST_IEP_AXI		106
+#define SRST_IEP_AHB		107
+#define SRST_RGA_AXI		108
+#define SRST_RGA_AHB		109
+#define SRST_ISP		110
+#define SRST_EDP		111
+
+#define SRST_VCODEC_AXI		112
+#define SRST_VCODEC_AHB		113
+#define SRST_VIO_H2P		114
+#define SRST_MIPIDSI0		115
+#define SRST_MIPIDSI1		116
+#define SRST_MIPICSI		117
+#define SRST_LVDS_PHY		118
+#define SRST_LVDS_CON		119
+#define SRST_GPU		120
+#define SRST_HDMI		121
+/* 122, 123 reserved */
+#define SRST_CORE_PVTM		124
+#define SRST_GPU_PVTM		125
+/* 126, 127 reserved */
+
+#define SRST_MMC0		128
+#define SRST_SDIO0		129
+#define SRST_SDIO1		130
+#define SRST_EMMC		131
+#define SRST_USBOTG_AHB		132
+#define SRST_USBOTG_PHY		133
+#define SRST_USBOTG_CON		134
+#define SRST_USBHOST0_AHB	135
+#define SRST_USBHOST0_PHY	136
+#define SRST_USBHOST0_CON	137
+#define SRST_USBHOST1_AHB	138
+#define SRST_USBHOST1_PHY	139
+#define SRST_USBHOST1_CON	140
+#define SRST_USB_ADP		141
+#define SRST_ACC_EFUSE		142
+/* 143 reserved */
