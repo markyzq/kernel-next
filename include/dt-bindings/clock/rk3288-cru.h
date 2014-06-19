@@ -38,6 +38,13 @@
 #define SCLK_I2S		82
 #define SCLK_SPDIF		83
 #define SCLK_SPDIF8CH		84
+#define SCLK_TIMER0		85
+#define SCLK_TIMER1		86
+#define SCLK_TIMER2		87
+#define SCLK_TIMER3		88
+#define SCLK_TIMER4		89
+#define SCLK_TIMER5		90
+#define SCLK_TIMER6		91
 
 #define DCLK_LCDC0		190
 #define DCLK_LCDC1		191
@@ -85,6 +92,8 @@
 #define PCLK_PWM		350
 #define PCLK_RKPWM		351
 #define PCLK_PS2C		352
+#define PCLK_TIMER		353
+#define PCLK_TZPC		354
 
 /* hclk gates from 448 */
 #define HCLK_GPS		448
@@ -106,5 +115,61 @@
 #define HCLK_SPDIF8CH		464
 #define HCLK_LCDC0		465
 #define HCLK_LCDC1		466
+#define HCLK_ROM		467
+#define HCLK_IEP		468
+#define HCLK_ISP		469
+#define HCLK_RGA		470
 
 #define CLK_NR_CLKS		576
+
+
+#define SRST_CORE0		0
+#define SRST_CORE1		1
+#define SRST_CORE2		2
+#define SRST_CORE3		3
+#define SRST_CORE0_PO		4
+#define SRST_CORE1_PO		5
+#define SRST_CORE2_PO		6
+#define SRST_CORE3_PO		7
+#define SRST_PDCORE_STRSYS	8
+#define SRST_PDBUS_STRSYS	9
+#define SRST_L2C		10
+#define SRST_TOPDBG		11
+#define SRST_CORE0_DBG		12
+#define SRST_CORE1_DBG		13
+#define SRST_CORE2_DBG		14
+#define SRST_CORE3_DBG		15
+
+#define SRST_PDBUG_AHB_ARBITOR	16
+#define SRST_EFUSE256		17
+#define SRST_DMAC1		18
+#define SRST_INTMEM		19
+#define SRST_ROM		20
+#define SRST_SPDIF8CH		21
+#define SRST_TIMER		22
+#define SRST_I2S		23
+#define SRST_SPDIF		24
+#define SRST_TIMER0		25
+#define SRST_TIMER1		26
+#define SRST_TIMER2		27
+#define SRST_TIMER3		28
+#define SRST_TIMER4		29
+#define SRST_TIMER5		30
+#define SRST_EFUSE		31
+
+#define SRST_GPIO0		32
+#define SRST_GPIO1		33
+#define SRST_GPIO2		34
+#define SRST_GPIO3		35
+#define SRST_GPIO4		36
+#define SRST_GPIO5		37
+#define SRST_GPIO6		38
+#define SRST_GPIO7		39
+#define SRST_GPIO8		40
+/* 41 reserved */
+#define SRST_I2C0		42
+#define SRST_I2C1		43
+#define SRST_I2C2		44
+#define SRST_I2C3		45
+#define SRST_I2C4		46
+#define SRST_I2C5		47
