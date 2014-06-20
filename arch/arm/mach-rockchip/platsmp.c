@@ -201,7 +201,7 @@ static void __init rk3288_smp_prepare_cpus(unsigned int max_cpus)
 	}
 
 	if (rockchip_smp_prepare_sram(node,
-				virt_to_phys(rockchip_secondary_startup)))
+				virt_to_phys(secondary_startup)))
 		return;
 
 	node = of_find_compatible_node(NULL, NULL, "rockchip,rk3066-pmu");
