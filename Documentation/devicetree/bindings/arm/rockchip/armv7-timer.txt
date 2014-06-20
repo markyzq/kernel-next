@@ -1,0 +1,22 @@
+Rockchip armv7-timer:
+---------------------
+
+The architected timer on rk3288 SoCs has special setup requirements, as
+the cpu-timer block needs to supply the architected timer.
+
+Required node properties:
+- compatible value : = "rockchip,rk3288-armv7-timer";
+- reg : physical base address and the size of the registers window
+        of the supplying timer block
+- CP15 Timer node properties as described in bindings/arm/arch_timer.txt
+
+Example:
+
+architected-timer {
+	compatible = "rockchip,rk3288-armv7-timer";
+	reg = <0xff810020 0x20>;
+	interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+		     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+		     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+	clock-frequency = <24000000>;
+};
