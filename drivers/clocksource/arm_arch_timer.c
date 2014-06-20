@@ -635,7 +635,7 @@ static void __init arch_timer_common_init(void)
 	arch_timer_arch_init();
 }
 
-void __init arch_timer_init(struct device_node *np)
+static void __init arch_timer_init(struct device_node *np)
 {
 	int i;
 
