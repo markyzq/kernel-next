@@ -139,15 +139,15 @@ PNAME(mux_hsicphy12m_p)	= { "hsicphy12m_xin12m", "hsicphy12m_usbphy" };
 //PNAME(aclk_lcdc_iep_p)	= { "aclk_vio0", "aclk_vio1" };
 
 static struct rockchip_pll_clock rk3288_pll_clks[] __initdata = {
-	[apll] = PLL(pll_rk3066, 0, "apll", mux_pll_p, 0, RK3288_PLL_CON(0),
+	[apll] = PLL(pll_rk3066, PLL_APLL, "apll", mux_pll_p, 0, RK3288_PLL_CON(0),
 		     RK3288_MODE_CON, 0, 6, rk3288_pll_rates),
-	[dpll] = PLL(pll_rk3066, 0, "dpll", mux_pll_p, 0, RK3288_PLL_CON(4),
+	[dpll] = PLL(pll_rk3066, PLL_DPLL, "dpll", mux_pll_p, 0, RK3288_PLL_CON(4),
 		     RK3288_MODE_CON, 4, 5, NULL),
-	[cpll] = PLL(pll_rk3066, 0, "cpll", mux_pll_p, 0, RK3288_PLL_CON(8),
+	[cpll] = PLL(pll_rk3066, PLL_CPLL, "cpll", mux_pll_p, 0, RK3288_PLL_CON(8),
 		     RK3288_MODE_CON, 8, 7, rk3288_pll_rates),
-	[gpll] = PLL(pll_rk3066, 0, "gpll", mux_pll_p, 0, RK3288_PLL_CON(12),
+	[gpll] = PLL(pll_rk3066, PLL_GPLL, "gpll", mux_pll_p, 0, RK3288_PLL_CON(12),
 		     RK3288_MODE_CON, 12, 8, rk3288_pll_rates),
-	[npll] = PLL(pll_rk3066, 0, "npll",  mux_pll_p, 0, RK3288_PLL_CON(16),
+	[npll] = PLL(pll_rk3066, PLL_NPLL, "npll",  mux_pll_p, 0, RK3288_PLL_CON(16),
 		     RK3288_MODE_CON, 14, 9, NULL),
 };
 

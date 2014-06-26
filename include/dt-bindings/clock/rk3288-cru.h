@@ -13,10 +13,14 @@
  * GNU General Public License for more details.
  */
 
-/* core clocks from 1 */
+/* core clocks */
+#define PLL_APLL		1
+#define PLL_DPLL		2
+#define PLL_CPLL		3
+#define PLL_GPLL		4
+#define PLL_NPLL		5
 
-
-/* sclk gates (special clocks) from 64 */
+/* sclk gates (special clocks) */
 #define SCLK_GPU		64
 #define SCLK_SPI0		65
 #define SCLK_SPI1		66
@@ -61,7 +65,7 @@
 #define DCLK_VOP0		190
 #define DCLK_VOP1		191
 
-/* aclk gates from 192*/
+/* aclk gates */
 #define ACLK_GPU		192
 #define ACLK_DMAC1		193
 #define ACLK_DMAC2		194
@@ -72,7 +76,7 @@
 #define ACLK_CRYPTO		199
 #define ACLK_RGA		200
 
-/* pclk gates from 320*/
+/* pclk gates */
 #define PCLK_GPIO0		320
 #define PCLK_GPIO1		321
 #define PCLK_GPIO2		322
@@ -109,7 +113,7 @@
 #define PCLK_TIMER		353
 #define PCLK_TZPC		354
 
-/* hclk gates from 448 */
+/* hclk gates */
 #define HCLK_GPS		448
 #define HCLK_OTG0		449
 #define HCLK_USBHOST0		450
@@ -134,7 +138,7 @@
 #define HCLK_ISP		469
 #define HCLK_RGA		470
 
-#define CLK_NR_CLKS		576
+#define CLK_NR_CLKS		(HCLK_RGA + 1)
 
 /* soft-reset indices */
 #define SRST_CORE0		0
