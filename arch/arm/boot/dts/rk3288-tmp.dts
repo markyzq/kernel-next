@@ -94,6 +94,24 @@
 			};
 		};
 
+		dwmmc@ff0f0000 {
+			num-slots = <1>;
+			status = "okay";
+
+			broken-cd;
+			non-removable;
+			supports-highspeed;
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&emmc0_clk &emmc0_cmd &emmc0_pwr &emmc0_bus8>;
+
+			slot@0 {
+				reg = <0>;
+				bus-width = <8>;
+				disable-wp;
+			};
+		};
+
 		watchdog@ff800000 {
 			status = "okay";
 		};
