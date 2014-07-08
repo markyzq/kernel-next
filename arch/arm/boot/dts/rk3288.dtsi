@@ -400,7 +400,7 @@
 
 			sd0 {
 				sd0_clk: sd0-clk {
-					rockchip,pins = <6 20 RK_FUNC_1 &pcfg_pull_down>;
+					rockchip,pins = <6 20 RK_FUNC_1 &pcfg_pull_none>;
 				};
 
 				sd0_cmd: sd0-cmd {
