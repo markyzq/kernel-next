@@ -140,7 +140,7 @@
 			#reset-cells = <1>;
 
 			#rockchip,armclk-cells = <3>;
-			rockchip,armclk-divider-table = 
+			rockchip,armclk-divider-table =
 /*							<2208000 2 4>,
 							<2184000 2 4>,
 							<2160000 2 4>,
