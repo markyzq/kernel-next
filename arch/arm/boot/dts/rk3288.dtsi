@@ -68,7 +68,7 @@
 		ranges;
 
 		dwmmc@ff0c0000 {
-			compatible = "rockchip,rk2928-dw-mshc";
+			compatible = "rockchip,rk3288-dw-mshc";
 			reg = <0xff0c0000 0x4000>;
 			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
 			#address-cells = <1>;
@@ -82,7 +82,7 @@
 		};
 
 		emmc: dwmmc@ff0f0000 {
-			compatible = "rockchip,rk2928-dw-mshc";
+			compatible = "rockchip,rk3288-dw-mshc";
 			reg = <0xff0f0000 0x4000>;
 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
 			#address-cells = <1>;
