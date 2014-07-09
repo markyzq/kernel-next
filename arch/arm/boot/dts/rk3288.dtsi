@@ -94,6 +94,18 @@
 			fifo-depth = <0x100>;
 		};
 
+		saradc: saradc@ff100000 {
+			compatible = "rockchip,saradc";
+			reg = <0xff100000 0x100>;
+			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+			#io-channel-cells = <1>;
+
+			clock-frequency = <1000000>;
+			clocks = <&cru SCLK_SARADC>, <&cru PCLK_SARADC>;
+			clock-names = "saradc", "apb_pclk";
+			status = "disabled";
+		};
+
 		gic: interrupt-controller@ffc01000 {
 			compatible = "arm,cortex-a15-gic";
 			interrupt-controller;

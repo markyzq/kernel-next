@@ -112,6 +112,15 @@
 			};
 		};
 
+		saradc: saradc@ff100000 {
+			status = "okay";
+		};
+
+		iio_hwmon@1 {
+			compatible = "iio-hwmon";
+			io-channels = <&saradc 0>, <&saradc 1>, <&saradc 2>;
+		};
+
 		watchdog@ff800000 {
 			status = "okay";
 		};
