@@ -29,22 +29,22 @@
 
 		cpu@0 {
 			device_type = "cpu";
-			compatible = "arm,cortex-a15";
+			compatible = "arm,cortex-a12";
 			reg = <0x500>;
 		};
 		cpu@1 {
 			device_type = "cpu";
-			compatible = "arm,cortex-a15";
+			compatible = "arm,cortex-a12";
 			reg = <0x501>;
 		};
 		cpu@2 {
 			device_type = "cpu";
-			compatible = "arm,cortex-a15";
+			compatible = "arm,cortex-a12";
 			reg = <0x502>;
 		};
 		cpu@3 {
 			device_type = "cpu";
-			compatible = "arm,cortex-a15";
+			compatible = "arm,cortex-a12";
 			reg = <0x503>;
 		};
 	};
@@ -580,6 +580,7 @@
 			compatible = "snps,dw-wdt";
 			reg = <0xff800000 0x100>;
 			interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
+// watchdog pclk is controlled from SGRF_SOC_CON0[6]
 //			clocks = <&per_base_clk>;
 			status = "disable";
 		};
