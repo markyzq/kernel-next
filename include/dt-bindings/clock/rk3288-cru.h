@@ -184,7 +184,6 @@
 #define SRST_GPIO6		38
 #define SRST_GPIO7		39
 #define SRST_GPIO8		40
-/* 41 reserved */
 #define SRST_I2C0		42
 #define SRST_I2C1		43
 #define SRST_I2C2		44
@@ -210,12 +209,9 @@
 #define SRST_USB_PERI		63
 
 #define SRST_DMAC2		64
-/* 65 reserved */
 #define SRST_MAC		66
 #define SRST_GPS		67
-/* 68 reserved */
 #define SRST_RKPWM		69
-/* 70 reserved */
 #define SRST_CCP		71
 #define SRST_USBHOST0		72
 #define SRST_HSIC		73
@@ -224,20 +220,16 @@
 #define SRST_HSADC		76
 #define SRST_NANDC0		77
 #define SRST_NANDC1		78
-/* 79 reserved */
 
 #define SRST_TZPC		80
-/* 81, 82 reserved */
 #define SRST_SPI0		83
 #define SRST_SPI1		84
 #define SRST_SPI2		85
-/* 86 reserved */
 #define SRST_SARADC		87
 #define SRST_PDALIVE_NIU	88
 #define SRST_PDPMU_INTMEM	89
 #define SRST_PDPMU_NIU		90
 #define SRST_SGRF		91
-/* 92,93,94,95 reserved */
 
 #define SRST_VIO_ARBI		96
 #define SRST_RGA_NIU		97
@@ -266,10 +258,8 @@
 #define SRST_LVDS_CON		119
 #define SRST_GPU		120
 #define SRST_HDMI		121
-/* 122, 123 reserved */
 #define SRST_CORE_PVTM		124
 #define SRST_GPU_PVTM		125
-/* 126, 127 reserved */
 
 #define SRST_MMC0		128
 #define SRST_SDIO0		129
@@ -286,4 +276,3 @@
 #define SRST_USBHOST1_CON	140
 #define SRST_USB_ADP		141
 #define SRST_ACC_EFUSE		142
-/* 143 reserved */

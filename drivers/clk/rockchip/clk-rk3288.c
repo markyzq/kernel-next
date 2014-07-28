@@ -127,9 +127,11 @@ PNAME(mux_macref_p)	= { "mac_src", "ext_gmac" };
 PNAME(mux_hsadcout_p)	= { "hsadc_src", "ext_hsadc" };
 PNAME(mux_edp_24m_p)	= { "ext_edp_24m", "xin24m" };
 PNAME(mux_tspout_p)	= { "cpll", "gpll", "npll", "xin27m" };
-PNAME(mux_usbphy480m_p)	= { "sclk_otgphy0", "sclk_otgphy1", "sclk_otgphy2" };
-PNAME(mux_hsicphy480m_p)= { "cpll", "gpll", "usbphy480m_src" };
-PNAME(mux_hsicphy12m_p)	= { "hsicphy12m_xin12m", "hsicphy12m_usbphy" };
+
+PNAME(mux_usbphy480m_p)		= { "sclk_otgphy0", "sclk_otgphy1",
+				    "sclk_otgphy2" };
+PNAME(mux_hsicphy480m_p)	= { "cpll", "gpll", "usbphy480m_src" };
+PNAME(mux_hsicphy12m_p)		= { "hsicphy12m_xin12m", "hsicphy12m_usbphy" };
 //PNAME(mux_aclk_vpu_p)	= { "aclk_vepu", "aclk_vdpu" };
 /*PNAME(mux_testclk_p) 	= { "aclk_peri", "armclk", "aclk_vio0", "ddrphy",
 			    "aclk_vcodec", "aclk_gpu", "aclk_rga", "xin24m",
@@ -754,9 +756,6 @@ static void __init rk3288_clk_init(struct device_node *np)
 
 //	rockchip_clk_register_armclk(SCLK_ARMCLK, "armclk", mux_armclk_p,
 //				     ARRAY_SIZE(mux_armclk_p), reg_base, np);
-
-printk("%s: clksel_con36 0x%x: 0x%x\n", __func__, RK3288_CLKSEL_CON(36), readl(reg_base + RK3288_CLKSEL_CON(36)));
-printk("%s: clkgate_con12 0x%x: 0x%x\n", __func__, RK3288_CLKGATE_CON(12), readl(reg_base + RK3288_CLKGATE_CON(12)));
 
 	rockchip_register_softrst(np, 9, reg_base + RK3288_SOFTRST_CON(0),
 				  ROCKCHIP_SOFTRST_HIWORD_MASK);
