@@ -723,6 +723,11 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 //			RK3288_CLKGATE_CON(13), 12, GFLAGS),
 };
 
+static const char *rk3288_critical_clocks[] __initdata = {
+	"aclk_cpu",
+	"aclk_peri",
+};
+
 static void __init rk3288_clk_init(struct device_node *np)
 {
 	void __iomem *reg_base;
@@ -753,6 +758,8 @@ static void __init rk3288_clk_init(struct device_node *np)
 				   RK3288_GRF_SOC_STATUS);
 	rockchip_clk_register_branches(rk3288_clk_branches,
 				  ARRAY_SIZE(rk3288_clk_branches));
+	rockchip_clk_protect_critical(rk3288_critical_clocks,
+				      ARRAY_SIZE(rk3288_critical_clocks));
 
 //	rockchip_clk_register_armclk(SCLK_ARMCLK, "armclk", mux_armclk_p,
 //				     ARRAY_SIZE(mux_armclk_p), reg_base, np);
