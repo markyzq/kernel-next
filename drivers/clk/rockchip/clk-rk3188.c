@@ -644,7 +644,7 @@ static void __init rk3188_clock_apply_init_table(void)
 	rockchip_clk_init_from_table(rk3188_clk_init_tbl, ARRAY_SIZE(rk3188_clk_init_tbl));
 }
 
-static const char *rk3188_critical_clocks[] __initdata = {
+static const char *rk3188_critical_clocks[] __initconst = {
 	"aclk_cpu",
 	"aclk_peri",
 };

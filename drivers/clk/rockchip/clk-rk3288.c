@@ -723,7 +723,7 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
 //			RK3288_CLKGATE_CON(13), 12, GFLAGS),
 };
 
-static const char *rk3288_critical_clocks[] __initdata = {
+static const char *rk3288_critical_clocks[] __initconst = {
 	"aclk_cpu",
 	"aclk_peri",
 };
