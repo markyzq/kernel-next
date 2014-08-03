@@ -15,7 +15,6 @@
 
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
-#include <dt-bindings/clock/rk3188-cru.h>
 #include "skeleton.dtsi"
 
 / {
@@ -215,6 +214,14 @@
 		reg = <0x20030010 0x10>;
 		#pwm-cells = <2>;
 		clocks = <&cru PCLK_PWM01>;
+		status = "disabled";
+	};
+
+	wdt: watchdog@2004c000 {
+		compatible = "snps,dw-wdt";
+		reg = <0x2004c000 0x100>;
+		clocks = <&cru PCLK_WDT>;
+		interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
 		status = "disabled";
 	};
 
