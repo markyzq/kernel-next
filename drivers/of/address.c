@@ -709,7 +709,12 @@ EXPORT_SYMBOL(of_iomap);
  * @index:	index of the io range
  * @name:	name of the resource
  *
- * Returns a pointer to the requested and mapped memory
+ * Returns a pointer to the requested and mapped memory or an ERR_PTR() encoded
+ * error code on failure. Usage example:
+ *
+ *	base = of_io_request_and_map(node, 0, "foo");
+ *	if (IS_ERR(base))
+ *		return PTR_ERR(base);
  */
 void __iomem *of_io_request_and_map(struct device_node *np, int index,
 					char *name)
@@ -718,14 +723,16 @@ void __iomem *of_io_request_and_map(struct device_node *np, int index,
 	void __iomem *mem;
 
 	if (of_address_to_resource(np, index, &res))
-		return NULL;
+		return IOMEM_ERR_PTR(-EINVAL);
 
 	if (!request_mem_region(res.start, resource_size(&res), name))
-		return NULL;
+		return IOMEM_ERR_PTR(-EBUSY);
 
 	mem = ioremap(res.start, resource_size(&res));
-	if (!mem)
+	if (!mem) {
 		release_mem_region(res.start, resource_size(&res));
+		return IOMEM_ERR_PTR(-ENOMEM);
+	}
 
 	return mem;
 }
